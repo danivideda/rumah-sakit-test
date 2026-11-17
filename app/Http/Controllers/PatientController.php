@@ -14,6 +14,7 @@ class PatientController extends Controller
         $search = $request->string('search')->trim();
 
         $patients = Patient::query()
+            ->withTrashed()
             ->when($search, function ($query) use ($search) {
                 $query->where('medical_record_number', 'like', "%{$search}%")
                     ->orWhere('nik', 'like', "%{$search}%")
