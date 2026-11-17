@@ -2,6 +2,121 @@
 
 Aplikasi test Sistem Informasi Rumah Sakit (SIMRS) berbasis Laravel + Inertia React.
 
+## Requirements
+
+- PHP 8.3+
+- Composer
+- Node.js 18+
+- Docker & Docker Compose
+
+## Cara Menjalankan (Local Development)
+
+### 1. Clone Repository
+
+```bash
+git clone https://github.com/danivideda/rumah-sakit-test.git
+cd rumah-sakit-test
+```
+
+### 2. Install Dependencies
+
+```bash
+composer install
+npm install
+```
+
+### 3. Setup Environment
+
+```bash
+cp .env.example .env
+php artisan key:generate
+```
+
+Ubah konfigurasi database di `.env` menjadi PostgreSQL:
+
+```env
+DB_CONNECTION=pgsql
+DB_HOST=127.0.0.1
+DB_PORT=5432
+DB_DATABASE=rumah-sakit-test
+DB_USERNAME=admin
+DB_PASSWORD=adminpassword
+```
+
+### 4. Jalankan Database (Docker)
+
+```bash
+docker compose up -d
+```
+
+PostgreSQL akan berjalan di port `5432`.
+
+Untuk berhenti:
+
+```bash
+docker compose down
+```
+
+### 5. Migrate & Seed
+
+```bash
+php artisan migrate --seed
+```
+
+### 6. Jalankan Aplikasi
+
+Buka **2 terminal**:
+
+**Terminal 1 — Laravel**
+
+```bash
+php artisan serve
+```
+
+**Terminal 2 — Vite (Frontend)**
+
+```bash
+npm run dev
+```
+
+Akses aplikasi di: [http://localhost:8000](http://localhost:8000)
+
+### 7. Login
+
+Buat user pertama melalui halaman register, atau lewat tinker:
+
+```bash
+php artisan tinker
+```
+
+```php
+User::factory()->create([
+    'name' => 'Admin',
+    'email' => 'admin@example.com',
+    'password' => bcrypt('password'),
+]);
+```
+
+## Perintah Berguna
+
+| Perintah | Keterangan |
+|----------|------------|
+| `docker compose up -d` | Jalankan database |
+| `docker compose down` | Stop database |
+| `php artisan migrate:fresh --seed` | Reset database + seed ulang |
+| `php artisan route:list` | Lihat daftar route |
+| `php artisan optimize:clear` | Clear semua cache |
+| `npm run build` | Build production frontend |
+
+## Struktur Halaman
+
+| URL | Keterangan |
+|-----|------------|
+| `/dashboard` | Statistik kunjungan |
+| `/dashboard/patients` | Manajemen pasien |
+| `/dashboard/rawat-jalan` | Pendaftaran rawat jalan |
+
+
 ## Struktur Database
 
 Berikut adalah tabel utama yang digunakan dalam sistem:
