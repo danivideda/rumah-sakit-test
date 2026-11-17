@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\PatientController;
+use App\Http\Controllers\RegistrationController;
 use Illuminate\Support\Facades\Route;
 
 Route::inertia('/', 'welcome')->name('home');
@@ -16,7 +17,10 @@ Route::middleware(['auth'])->group(function () {
         Route::post('patients/{id}/restore', [PatientController::class, 'restore'])
             ->name('patients.restore');
 
-        Route::inertia('rawat-jalan', 'rawat-jalan')->name('rawat-jalan');
+        Route::resource('rawat-jalan', RegistrationController::class)
+            ->only(['index', 'store'])
+            ->parameters(['rawat-jalan' => 'registration']);
+
         Route::inertia('periksa-pasien', 'periksa-pasien')->name('periksa-pasien');
     });
 });

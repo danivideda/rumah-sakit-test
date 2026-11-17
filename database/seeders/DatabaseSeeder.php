@@ -15,6 +15,11 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        // Seeder untuk Dokter dan Poliklinik
+        $this->call([
+            PolyclinicDoctorSeeder::class,
+            PatientSeeder::class,
+        ]);
         // User::factory(10)->create();
 
         User::factory()->create([
