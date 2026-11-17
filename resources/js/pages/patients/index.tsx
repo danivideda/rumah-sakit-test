@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import InputError from "@/components/input-error";
-import { Pencil, Trash2, RotateCcw, Search } from "lucide-react";
+import { Pencil, Trash2, RotateCcw, Search, ArrowUpDown, ArrowUp, ArrowDown } from "lucide-react";
 
 interface Patient {
     id: number;
@@ -29,6 +29,8 @@ interface Props {
     };
     filters: {
         search: string;
+        sort: string;
+        direction: "asc" | "desc";
     };
 }
 
@@ -90,8 +92,37 @@ export default function Index({ patients, filters }: Props) {
     const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
         router.get(
             "/dashboard/patients",
-            { search: e.target.value },
+            { 
+                search: e.target.value,
+                sort: filters.sort,
+                direction: filters.direction,
+            },
             { preserveState: true, replace: true }
+        );
+    };
+
+    const handleSort = (column: string) => {
+        const newDirection =
+            filters.sort === column && filters.direction === "asc" ? "desc" : "asc";
+        router.get(
+            "/dashboard/patients",
+            {
+                search: filters.search,
+                sort: column,
+                direction: newDirection,
+            },
+            { preserveState: true, replace: true }
+        );
+    };
+
+    const SortIcon = ({ column }: { column: string }) => {
+        if (filters.sort !== column) {
+            return <ArrowUpDown className="ml-1 inline size-3 opacity-50" />;
+        }
+        return filters.direction === "asc" ? (
+            <ArrowUp className="ml-1 inline size-3" />
+        ) : (
+            <ArrowDown className="ml-1 inline size-3" />
         );
     };
 
@@ -303,11 +334,21 @@ export default function Index({ patients, filters }: Props) {
                         <table className="w-full text-sm">
                             <thead>
                                 <tr className="border-b text-left">
-                                    <th className="p-2">No RM</th>
+                                    <th 
+                                        className="p-2 cursor-pointer hover:bg-muted/50 select-none"
+                                        onClick={() => handleSort("medical_record_number")}
+                                    >
+                                        No RM <SortIcon column="medical_record_number" />
+                                    </th>
                                     <th className="p-2">NIK</th>
                                     <th className="p-2">Nama</th>
                                     <th className="p-2">Jenis Kelamin</th>
-                                    <th className="p-2">Tgl Lahir</th>
+                                    <th 
+                                        className="p-2 cursor-pointer hover:bg-muted/50 select-none"
+                                        onClick={() => handleSort("birth_date")}
+                                    >
+                                        Tgl Lahir <SortIcon column="birth_date" />
+                                    </th>
                                     <th className="p-2">Telepon</th>
                                     <th className="p-2">Status</th>
                                     <th className="p-2 text-right">Aksi</th>

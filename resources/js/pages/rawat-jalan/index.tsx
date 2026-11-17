@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/select";
 import InputError from "@/components/input-error";
 import { useMemo, useState } from "react";
+import { ArrowUpDown, ArrowUp, ArrowDown } from "lucide-react";
 
 interface Patient {
     id: number;
@@ -51,6 +52,10 @@ interface Props {
     patients: Patient[];
     polyclinics: Polyclinic[];
     doctors: Doctor[];
+    filters: {
+        sort: string;
+        direction: "asc" | "desc";
+    };
 }
 
 const statusMap: Record<string, string> = {
@@ -65,6 +70,7 @@ export default function Index({
     patients,
     polyclinics,
     doctors,
+    filters,
 }: Props) {
     const [selectedPolyclinic, setSelectedPolyclinic] = useState<string>("");
 
@@ -93,6 +99,32 @@ export default function Index({
                 setSelectedPolyclinic("");
             },
         });
+    };
+
+    const handleSort = (column: string) => {
+        const newDirection =
+            filters.sort === column && filters.direction === "asc"
+                ? "desc"
+                : "asc";
+        router.get(
+            "/dashboard/rawat-jalan",
+            {
+                sort: column,
+                direction: newDirection,
+            },
+            { preserveState: true, replace: true }
+        );
+    };
+
+    const SortIcon = ({ column }: { column: string }) => {
+        if (filters.sort !== column) {
+            return <ArrowUpDown className="ml-1 inline size-3 opacity-50" />;
+        }
+        return filters.direction === "asc" ? (
+            <ArrowUp className="ml-1 inline size-3" />
+        ) : (
+            <ArrowDown className="ml-1 inline size-3" />
+        );
     };
 
     return (
@@ -286,8 +318,14 @@ export default function Index({
                                         <th className="p-2 text-left">
                                             No. Pendaftaran
                                         </th>
-                                        <th className="p-2 text-left">
-                                            Tanggal
+                                        <th
+                                            className="p-2 text-left cursor-pointer hover:bg-muted/50"
+                                            onClick={() =>
+                                                handleSort("registration_date")
+                                            }
+                                        >
+                                            Tanggal{" "}
+                                            <SortIcon column="registration_date" />
                                         </th>
                                         <th className="p-2 text-left">
                                             Pasien

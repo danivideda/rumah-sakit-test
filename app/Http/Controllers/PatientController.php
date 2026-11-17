@@ -12,6 +12,13 @@ class PatientController extends Controller
     public function index(Request $request)
     {
         $search = $request->string('search')->trim();
+        $sort = $request->string('sort')->toString() ?: 'created_at';
+        $direction = $request->string('direction')->toString() === 'asc' ? 'asc' : 'desc';
+
+        $allowedSorts = ['medical_record_number', 'birth_date', 'created_at', 'name', 'nik'];
+        if (! in_array($sort, $allowedSorts, true)) {
+            $sort = 'created_at';
+        }
 
         $patients = Patient::query()
             ->withTrashed()
@@ -20,13 +27,17 @@ class PatientController extends Controller
                     ->orWhere('nik', 'like', "%{$search}%")
                     ->orWhere('name', 'like', "%{$search}%");
             })
-            ->latest()
+            ->orderBy($sort, $direction)
             ->paginate(15)
             ->withQueryString();
 
         return Inertia::render('patients/index', [
             'patients' => $patients,
-            'filters' => ['search' => $search],
+            'filters' => [
+                'search' => $search,
+                'sort' => $sort,
+                'direction' => $direction,
+            ],
         ]);
     }
 

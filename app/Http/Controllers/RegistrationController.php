@@ -14,8 +14,16 @@ class RegistrationController extends Controller
 {
     public function index(Request $request)
     {
+        $sort = $request->string('sort')->toString() ?: 'registration_date';
+        $direction = $request->string('direction')->toString() === 'asc' ? 'asc' : 'desc';
+
+        $allowedSorts = ['registration_date', 'created_at'];
+        if (! in_array($sort, $allowedSorts, true)) {
+            $sort = 'registration_date';
+        }
+
         $registrations = Registration::with(['patient', 'doctor', 'polyclinic'])
-            ->latest()
+            ->orderBy($sort, $direction)
             ->paginate(15)
             ->withQueryString();
 
@@ -27,6 +35,10 @@ class RegistrationController extends Controller
                 ->with('polyclinic:id,name')
                 ->orderBy('name')
                 ->get(['id', 'name', 'polyclinic_id']),
+            'filters' => [
+                'sort' => $sort,
+                'direction' => $direction,
+            ],
         ]);
     }
 
