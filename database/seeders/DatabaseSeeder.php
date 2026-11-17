@@ -19,6 +19,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             PolyclinicDoctorSeeder::class,
             PatientSeeder::class,
+            RegistrationSeeder::class,
         ]);
         // User::factory(10)->create();
 
