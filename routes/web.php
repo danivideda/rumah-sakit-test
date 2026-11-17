@@ -3,6 +3,7 @@
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\PatientController;
 use App\Http\Controllers\RegistrationController;
+use App\Http\Controllers\ExaminationController;
 use Illuminate\Support\Facades\Route;
 
 Route::inertia('/', 'welcome')->name('home');
@@ -21,7 +22,8 @@ Route::middleware(['auth'])->group(function () {
             ->only(['index', 'store'])
             ->parameters(['rawat-jalan' => 'registration']);
 
-        Route::inertia('periksa-pasien', 'periksa-pasien')->name('periksa-pasien');
+        Route::get('periksa-pasien', [ExaminationController::class, 'index'])->name('periksa-pasien');
+        Route::post('periksa-pasien', [ExaminationController::class, 'store'])->name('periksa-pasien.store');
     });
 });
 
