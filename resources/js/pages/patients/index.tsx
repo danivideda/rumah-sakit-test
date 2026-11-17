@@ -74,14 +74,14 @@ export default function Index({ patients, filters }: Props) {
         e.preventDefault();
 
         if (editing) {
-            put(`/patients/${editing.id}`, {
+            put(`/dashboard/patients/${editing.id}`, {
                 onSuccess: () => {
                     reset();
                     setEditing(null);
                 },
             });
         } else {
-            post("/patients", {
+            post("/dashboard/patients", {
                 onSuccess: () => reset(),
             });
         }
@@ -89,7 +89,7 @@ export default function Index({ patients, filters }: Props) {
 
     const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
         router.get(
-            "/patients",
+            "/dashboard/patients",
             { search: e.target.value },
             { preserveState: true, replace: true }
         );
@@ -97,12 +97,12 @@ export default function Index({ patients, filters }: Props) {
 
     const destroy = (id: number) => {
         if (confirm("Nonaktifkan pasien ini?")) {
-            router.delete(`/patients/${id}`);
+            router.delete(`/dashboard/patients/${id}`);
         }
     };
 
     const restore = (id: number) => {
-        router.post(`/patients/${id}/restore`);
+        router.post(`/dashboard/patients/${id}/restore`);
     };
 
     return (
@@ -306,7 +306,7 @@ export default function Index({ patients, filters }: Props) {
                                     <th className="p-2">No RM</th>
                                     <th className="p-2">NIK</th>
                                     <th className="p-2">Nama</th>
-                                    <th className="p-2">JK</th>
+                                    <th className="p-2">Jenis Kelamin</th>
                                     <th className="p-2">Tgl Lahir</th>
                                     <th className="p-2">Telepon</th>
                                     <th className="p-2">Status</th>
@@ -344,7 +344,18 @@ export default function Index({ patients, filters }: Props) {
                                                     : "Perempuan"}
                                             </td>
                                             <td className="p-2">
-                                                {patient.birth_date}
+                                                {patient.birth_date
+                                                    ? new Date(
+                                                          patient.birth_date
+                                                      ).toLocaleDateString(
+                                                          "id-ID",
+                                                          {
+                                                              day: "numeric",
+                                                              month: "long",
+                                                              year: "numeric",
+                                                          }
+                                                      )
+                                                    : "-"}
                                             </td>
                                             <td className="p-2">
                                                 {patient.phone || "-"}
