@@ -22,10 +22,14 @@ class RegistrationController extends Controller
             $sort = 'registration_date';
         }
 
-        $registrations = Registration::with(['patient', 'doctor', 'polyclinic'])
-            ->orderBy($sort, $direction)
-            ->paginate(15)
-            ->withQueryString();
+        $registrations = Registration::with([
+            'patient' => fn ($q) => $q->withTrashed(),
+            'doctor',
+            'polyclinic',
+        ])
+        ->orderBy($sort, $direction)
+        ->paginate(15)
+        ->withQueryString();
 
         return Inertia::render('rawat-jalan/index', [
             'registrations' => $registrations,

@@ -4,13 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import InputError from "@/components/input-error";
 import { useMemo, useState } from "react";
 import { ArrowUpDown, ArrowUp, ArrowDown } from "lucide-react";
@@ -39,9 +33,13 @@ interface Registration {
     status: string;
     complaint: string | null;
     payment_type: string;
-    patient: { name: string; medical_record_number: string };
-    doctor: { name: string };
-    polyclinic: { name: string };
+    patient: {
+        name: string;
+        medical_record_number: string;
+        deleted_at: string | null;
+    } | null;
+    doctor: { name: string } | null;
+    polyclinic: { name: string } | null;
 }
 
 interface Props {
@@ -65,20 +63,12 @@ const statusMap: Record<string, string> = {
     cancelled: "BATAL",
 };
 
-export default function Index({
-    registrations,
-    patients,
-    polyclinics,
-    doctors,
-    filters,
-}: Props) {
+export default function Index({ registrations, patients, polyclinics, doctors, filters }: Props) {
     const [selectedPolyclinic, setSelectedPolyclinic] = useState<string>("");
 
     const filteredDoctors = useMemo(() => {
         if (!selectedPolyclinic) return [];
-        return doctors.filter(
-            (d) => d.polyclinic_id === Number(selectedPolyclinic)
-        );
+        return doctors.filter((d) => d.polyclinic_id === Number(selectedPolyclinic));
     }, [selectedPolyclinic, doctors]);
 
     const { data, setData, post, processing, errors, reset } = useForm({
@@ -102,10 +92,7 @@ export default function Index({
     };
 
     const handleSort = (column: string) => {
-        const newDirection =
-            filters.sort === column && filters.direction === "asc"
-                ? "desc"
-                : "asc";
+        const newDirection = filters.sort === column && filters.direction === "asc" ? "desc" : "asc";
         router.get(
             "/dashboard/rawat-jalan",
             {
@@ -132,9 +119,7 @@ export default function Index({
             <Head title="Pendaftaran Rawat Jalan" />
 
             <div className="space-y-6 p-4 md:p-6">
-                <h1 className="text-2xl font-semibold">
-                    Pendaftaran Rawat Jalan
-                </h1>
+                <h1 className="text-2xl font-semibold">Pendaftaran Rawat Jalan</h1>
 
                 {/* Form Pendaftaran */}
                 <Card>
@@ -142,26 +127,16 @@ export default function Index({
                         <CardTitle>Form Pendaftaran Baru</CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <form
-                            onSubmit={submit}
-                            className="grid gap-4 md:grid-cols-2"
-                        >
+                        <form onSubmit={submit} className="grid gap-4 md:grid-cols-2">
                             <div className="space-y-2">
                                 <Label>Nomor Pendaftaran *</Label>
                                 <Input
                                     value={data.registration_number}
-                                    onChange={(e) =>
-                                        setData(
-                                            "registration_number",
-                                            e.target.value
-                                        )
-                                    }
+                                    onChange={(e) => setData("registration_number", e.target.value)}
                                     placeholder="Contoh: RJ-20261117-001"
                                     required
                                 />
-                                <InputError
-                                    message={errors.registration_number}
-                                />
+                                <InputError message={errors.registration_number} />
                             </div>
 
                             <div className="space-y-2">
@@ -169,38 +144,22 @@ export default function Index({
                                 <Input
                                     type="date"
                                     value={data.registration_date}
-                                    onChange={(e) =>
-                                        setData(
-                                            "registration_date",
-                                            e.target.value
-                                        )
-                                    }
+                                    onChange={(e) => setData("registration_date", e.target.value)}
                                     required
                                 />
-                                <InputError
-                                    message={errors.registration_date}
-                                />
+                                <InputError message={errors.registration_date} />
                             </div>
 
                             <div className="space-y-2">
                                 <Label>Pasien *</Label>
-                                <Select
-                                    value={data.patient_id}
-                                    onValueChange={(v) =>
-                                        setData("patient_id", v)
-                                    }
-                                >
+                                <Select value={data.patient_id} onValueChange={(v) => setData("patient_id", v)}>
                                     <SelectTrigger>
                                         <SelectValue placeholder="Pilih pasien" />
                                     </SelectTrigger>
                                     <SelectContent>
                                         {patients.map((p) => (
-                                            <SelectItem
-                                                key={p.id}
-                                                value={String(p.id)}
-                                            >
-                                                {p.medical_record_number} -{" "}
-                                                {p.name}
+                                            <SelectItem key={p.id} value={String(p.id)}>
+                                                {p.medical_record_number} - {p.name}
                                             </SelectItem>
                                         ))}
                                     </SelectContent>
@@ -223,10 +182,7 @@ export default function Index({
                                     </SelectTrigger>
                                     <SelectContent>
                                         {polyclinics.map((p) => (
-                                            <SelectItem
-                                                key={p.id}
-                                                value={String(p.id)}
-                                            >
+                                            <SelectItem key={p.id} value={String(p.id)}>
                                                 {p.name}
                                             </SelectItem>
                                         ))}
@@ -239,9 +195,7 @@ export default function Index({
                                 <Label>Dokter *</Label>
                                 <Select
                                     value={data.doctor_id}
-                                    onValueChange={(v) =>
-                                        setData("doctor_id", v)
-                                    }
+                                    onValueChange={(v) => setData("doctor_id", v)}
                                     disabled={!selectedPolyclinic}
                                 >
                                     <SelectTrigger>
@@ -249,10 +203,7 @@ export default function Index({
                                     </SelectTrigger>
                                     <SelectContent>
                                         {filteredDoctors.map((d) => (
-                                            <SelectItem
-                                                key={d.id}
-                                                value={String(d.id)}
-                                            >
+                                            <SelectItem key={d.id} value={String(d.id)}>
                                                 {d.name}
                                             </SelectItem>
                                         ))}
@@ -263,22 +214,13 @@ export default function Index({
 
                             <div className="space-y-2">
                                 <Label>Jenis Pembayaran *</Label>
-                                <Select
-                                    value={data.payment_type}
-                                    onValueChange={(v) =>
-                                        setData("payment_type", v)
-                                    }
-                                >
+                                <Select value={data.payment_type} onValueChange={(v) => setData("payment_type", v)}>
                                     <SelectTrigger>
                                         <SelectValue />
                                     </SelectTrigger>
                                     <SelectContent>
-                                        <SelectItem value="UMUM">
-                                            UMUM
-                                        </SelectItem>
-                                        <SelectItem value="BPJS">
-                                            BPJS
-                                        </SelectItem>
+                                        <SelectItem value="UMUM">UMUM</SelectItem>
+                                        <SelectItem value="BPJS">BPJS</SelectItem>
                                     </SelectContent>
                                 </Select>
                                 <InputError message={errors.payment_type} />
@@ -288,9 +230,7 @@ export default function Index({
                                 <Label>Keluhan Utama</Label>
                                 <Input
                                     value={data.complaint}
-                                    onChange={(e) =>
-                                        setData("complaint", e.target.value)
-                                    }
+                                    onChange={(e) => setData("complaint", e.target.value)}
                                     placeholder="Keluhan pasien..."
                                 />
                                 <InputError message={errors.complaint} />
@@ -315,74 +255,48 @@ export default function Index({
                             <table className="w-full text-sm">
                                 <thead>
                                     <tr className="border-b">
-                                        <th className="p-2 text-left">
-                                            No. Pendaftaran
-                                        </th>
+                                        <th className="p-2 text-left">No. Pendaftaran</th>
                                         <th
                                             className="p-2 text-left cursor-pointer hover:bg-muted/50"
-                                            onClick={() =>
-                                                handleSort("registration_date")
-                                            }
+                                            onClick={() => handleSort("registration_date")}
                                         >
-                                            Tanggal{" "}
-                                            <SortIcon column="registration_date" />
+                                            Tanggal <SortIcon column="registration_date" />
                                         </th>
-                                        <th className="p-2 text-left">
-                                            Pasien
-                                        </th>
-                                        <th className="p-2 text-left">
-                                            Poliklinik
-                                        </th>
-                                        <th className="p-2 text-left">
-                                            Dokter
-                                        </th>
-                                        <th className="p-2 text-left">
-                                            Pembayaran
-                                        </th>
-                                        <th className="p-2 text-left">
-                                            Status
-                                        </th>
+                                        <th className="p-2 text-left">Pasien</th>
+                                        <th className="p-2 text-left">Poliklinik</th>
+                                        <th className="p-2 text-left">Dokter</th>
+                                        <th className="p-2 text-left">Pembayaran</th>
+                                        <th className="p-2 text-left">Status</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {registrations.data.map((r) => (
                                         <tr key={r.id} className="border-b">
+                                            <td className="p-2">{r.registration_number}</td>
                                             <td className="p-2">
-                                                {r.registration_number}
-                                            </td>
-                                            <td className="p-2">
-                                                {new Date(
-                                                    r.registration_date
-                                                ).toLocaleDateString("id-ID")}
+                                                {new Date(r.registration_date).toLocaleDateString("id-ID")}
                                             </td>
                                             <td className="p-2">
-                                                {
-                                                    r.patient
-                                                        .medical_record_number
-                                                }{" "}
-                                                - {r.patient.name}
+                                                {r.patient ? (
+                                                    <span className={r.patient.deleted_at ? "text-destructive" : ""}>
+                                                        {r.patient.medical_record_number} - {r.patient.name}
+                                                        {r.patient.deleted_at && (
+                                                            <span className="ml-1 text-xs">(Nonaktif)</span>
+                                                        )}
+                                                    </span>
+                                                ) : (
+                                                    "Pasien tidak ditemukan"
+                                                )}
                                             </td>
-                                            <td className="p-2">
-                                                {r.polyclinic.name}
-                                            </td>
-                                            <td className="p-2">
-                                                {r.doctor.name}
-                                            </td>
-                                            <td className="p-2">
-                                                {r.payment_type}
-                                            </td>
-                                            <td className="p-2 font-medium">
-                                                {statusMap[r.status] ||
-                                                    r.status}
-                                            </td>
+                                            <td className="p-2">{r.polyclinic?.name ?? "-"}</td>
+                                            <td className="p-2">{r.doctor?.name ?? "-"}</td>
+                                            <td className="p-2">{r.payment_type}</td>
+                                            <td className="p-2 font-medium">{statusMap[r.status] || r.status}</td>
                                         </tr>
                                     ))}
                                     {registrations.data.length === 0 && (
                                         <tr>
-                                            <td
-                                                colSpan={7}
-                                                className="p-4 text-center text-muted-foreground"
-                                            >
+                                            <td colSpan={7} className="p-4 text-center text-muted-foreground">
                                                 Belum ada pendaftaran
                                             </td>
                                         </tr>

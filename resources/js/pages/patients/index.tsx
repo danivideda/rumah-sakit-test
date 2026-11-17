@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import InputError from "@/components/input-error";
 import { Pencil, Trash2, RotateCcw, Search, ArrowUpDown, ArrowUp, ArrowDown } from "lucide-react";
+import { dashboard } from "@/routes";
 
 interface Patient {
     id: number;
@@ -37,18 +38,17 @@ interface Props {
 export default function Index({ patients, filters }: Props) {
     const [editing, setEditing] = useState<Patient | null>(null);
 
-    const { data, setData, post, put, processing, errors, reset, clearErrors } =
-        useForm({
-            medical_record_number: "",
-            nik: "",
-            name: "",
-            gender: "L" as "L" | "P",
-            birth_date: "",
-            birth_place: "",
-            address: "",
-            phone: "",
-            blood_type: "",
-        });
+    const { data, setData, post, put, processing, errors, reset, clearErrors } = useForm({
+        medical_record_number: "",
+        nik: "",
+        name: "",
+        gender: "L" as "L" | "P",
+        birth_date: "",
+        birth_place: "",
+        address: "",
+        phone: "",
+        blood_type: "",
+    });
 
     const startEdit = (patient: Patient) => {
         setEditing(patient);
@@ -92,7 +92,7 @@ export default function Index({ patients, filters }: Props) {
     const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
         router.get(
             "/dashboard/patients",
-            { 
+            {
                 search: e.target.value,
                 sort: filters.sort,
                 direction: filters.direction,
@@ -102,8 +102,7 @@ export default function Index({ patients, filters }: Props) {
     };
 
     const handleSort = (column: string) => {
-        const newDirection =
-            filters.sort === column && filters.direction === "asc" ? "desc" : "asc";
+        const newDirection = filters.sort === column && filters.direction === "asc" ? "desc" : "asc";
         router.get(
             "/dashboard/patients",
             {
@@ -141,40 +140,24 @@ export default function Index({ patients, filters }: Props) {
             <Head title="Pengelolaan Pasien" />
 
             <div className="space-y-6 p-4 md:p-6">
-                <h1 className="text-2xl font-semibold">
-                    Pengelolaan Data Pasien
-                </h1>
+                <h1 className="text-2xl font-semibold">Pengelolaan Data Pasien</h1>
 
                 {/* Form */}
                 <Card>
                     <CardHeader>
-                        <CardTitle>
-                            {editing ? "Edit Pasien" : "Tambah Pasien Baru"}
-                        </CardTitle>
+                        <CardTitle>{editing ? "Edit Pasien" : "Tambah Pasien Baru"}</CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <form
-                            onSubmit={submit}
-                            className="grid gap-4 md:grid-cols-2"
-                        >
+                        <form onSubmit={submit} className="grid gap-4 md:grid-cols-2">
                             <div className="space-y-2">
-                                <Label htmlFor="medical_record_number">
-                                    Nomor Rekam Medis *
-                                </Label>
+                                <Label htmlFor="medical_record_number">Nomor Rekam Medis *</Label>
                                 <Input
                                     id="medical_record_number"
                                     value={data.medical_record_number}
-                                    onChange={(e) =>
-                                        setData(
-                                            "medical_record_number",
-                                            e.target.value
-                                        )
-                                    }
+                                    onChange={(e) => setData("medical_record_number", e.target.value)}
                                     required
                                 />
-                                <InputError
-                                    message={errors.medical_record_number}
-                                />
+                                <InputError message={errors.medical_record_number} />
                             </div>
 
                             <div className="space-y-2">
@@ -182,9 +165,7 @@ export default function Index({ patients, filters }: Props) {
                                 <Input
                                     id="nik"
                                     value={data.nik}
-                                    onChange={(e) =>
-                                        setData("nik", e.target.value)
-                                    }
+                                    onChange={(e) => setData("nik", e.target.value)}
                                     maxLength={16}
                                     required
                                 />
@@ -196,9 +177,7 @@ export default function Index({ patients, filters }: Props) {
                                 <Input
                                     id="name"
                                     value={data.name}
-                                    onChange={(e) =>
-                                        setData("name", e.target.value)
-                                    }
+                                    onChange={(e) => setData("name", e.target.value)}
                                     required
                                 />
                                 <InputError message={errors.name} />
@@ -209,12 +188,7 @@ export default function Index({ patients, filters }: Props) {
                                 <select
                                     id="gender"
                                     value={data.gender}
-                                    onChange={(e) =>
-                                        setData(
-                                            "gender",
-                                            e.target.value as "L" | "P"
-                                        )
-                                    }
+                                    onChange={(e) => setData("gender", e.target.value as "L" | "P")}
                                     className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-xs"
                                     required
                                 >
@@ -225,16 +199,12 @@ export default function Index({ patients, filters }: Props) {
                             </div>
 
                             <div className="space-y-2">
-                                <Label htmlFor="birth_date">
-                                    Tanggal Lahir *
-                                </Label>
+                                <Label htmlFor="birth_date">Tanggal Lahir *</Label>
                                 <Input
                                     id="birth_date"
                                     type="date"
                                     value={data.birth_date}
-                                    onChange={(e) =>
-                                        setData("birth_date", e.target.value)
-                                    }
+                                    onChange={(e) => setData("birth_date", e.target.value)}
                                     max={new Date().toISOString().split("T")[0]}
                                     required
                                 />
@@ -242,15 +212,11 @@ export default function Index({ patients, filters }: Props) {
                             </div>
 
                             <div className="space-y-2">
-                                <Label htmlFor="birth_place">
-                                    Tempat Lahir
-                                </Label>
+                                <Label htmlFor="birth_place">Tempat Lahir</Label>
                                 <Input
                                     id="birth_place"
                                     value={data.birth_place}
-                                    onChange={(e) =>
-                                        setData("birth_place", e.target.value)
-                                    }
+                                    onChange={(e) => setData("birth_place", e.target.value)}
                                 />
                                 <InputError message={errors.birth_place} />
                             </div>
@@ -260,9 +226,7 @@ export default function Index({ patients, filters }: Props) {
                                 <Input
                                     id="phone"
                                     value={data.phone}
-                                    onChange={(e) =>
-                                        setData("phone", e.target.value)
-                                    }
+                                    onChange={(e) => setData("phone", e.target.value)}
                                 />
                                 <InputError message={errors.phone} />
                             </div>
@@ -272,23 +236,17 @@ export default function Index({ patients, filters }: Props) {
                                 <Input
                                     id="address"
                                     value={data.address}
-                                    onChange={(e) =>
-                                        setData("address", e.target.value)
-                                    }
+                                    onChange={(e) => setData("address", e.target.value)}
                                 />
                                 <InputError message={errors.address} />
                             </div>
 
                             <div className="space-y-2">
-                                <Label htmlFor="blood_type">
-                                    Golongan Darah
-                                </Label>
+                                <Label htmlFor="blood_type">Golongan Darah</Label>
                                 <Input
                                     id="blood_type"
                                     value={data.blood_type}
-                                    onChange={(e) =>
-                                        setData("blood_type", e.target.value)
-                                    }
+                                    onChange={(e) => setData("blood_type", e.target.value)}
                                     placeholder="A, B, AB, O, A+, dll"
                                 />
                                 <InputError message={errors.blood_type} />
@@ -296,16 +254,10 @@ export default function Index({ patients, filters }: Props) {
 
                             <div className="md:col-span-2 flex gap-2 pt-2">
                                 <Button type="submit" disabled={processing}>
-                                    {editing
-                                        ? "Update Pasien"
-                                        : "Tambah Pasien"}
+                                    {editing ? "Update Pasien" : "Tambah Pasien"}
                                 </Button>
                                 {editing && (
-                                    <Button
-                                        type="button"
-                                        variant="outline"
-                                        onClick={cancelEdit}
-                                    >
+                                    <Button type="button" variant="outline" onClick={cancelEdit}>
                                         Batal
                                     </Button>
                                 )}
@@ -334,7 +286,7 @@ export default function Index({ patients, filters }: Props) {
                         <table className="w-full text-sm">
                             <thead>
                                 <tr className="border-b text-left">
-                                    <th 
+                                    <th
                                         className="p-2 cursor-pointer hover:bg-muted/50 select-none"
                                         onClick={() => handleSort("medical_record_number")}
                                     >
@@ -343,7 +295,7 @@ export default function Index({ patients, filters }: Props) {
                                     <th className="p-2">NIK</th>
                                     <th className="p-2">Nama</th>
                                     <th className="p-2">Jenis Kelamin</th>
-                                    <th 
+                                    <th
                                         className="p-2 cursor-pointer hover:bg-muted/50 select-none"
                                         onClick={() => handleSort("birth_date")}
                                     >
@@ -357,59 +309,34 @@ export default function Index({ patients, filters }: Props) {
                             <tbody>
                                 {patients.data.length === 0 ? (
                                     <tr>
-                                        <td
-                                            colSpan={8}
-                                            className="p-4 text-center text-muted-foreground"
-                                        >
+                                        <td colSpan={8} className="p-4 text-center text-muted-foreground">
                                             Tidak ada data pasien
                                         </td>
                                     </tr>
                                 ) : (
                                     patients.data.map((patient) => (
-                                        <tr
-                                            key={patient.id}
-                                            className="border-b hover:bg-muted/50"
-                                        >
-                                            <td className="p-2 font-mono">
-                                                {patient.medical_record_number}
-                                            </td>
-                                            <td className="p-2 font-mono">
-                                                {patient.nik}
-                                            </td>
+                                        <tr key={patient.id} className="border-b hover:bg-muted/50">
+                                            <td className="p-2 font-mono">{patient.medical_record_number}</td>
+                                            <td className="p-2 font-mono">{patient.nik}</td>
+                                            <td className="p-2">{patient.name}</td>
                                             <td className="p-2">
-                                                {patient.name}
-                                            </td>
-                                            <td className="p-2">
-                                                {patient.gender === "L"
-                                                    ? "Laki-laki"
-                                                    : "Perempuan"}
+                                                {patient.gender === "L" ? "Laki-laki" : "Perempuan"}
                                             </td>
                                             <td className="p-2">
                                                 {patient.birth_date
-                                                    ? new Date(
-                                                          patient.birth_date
-                                                      ).toLocaleDateString(
-                                                          "id-ID",
-                                                          {
-                                                              day: "numeric",
-                                                              month: "long",
-                                                              year: "numeric",
-                                                          }
-                                                      )
+                                                    ? new Date(patient.birth_date).toLocaleDateString("id-ID", {
+                                                          day: "numeric",
+                                                          month: "long",
+                                                          year: "numeric",
+                                                      })
                                                     : "-"}
                                             </td>
-                                            <td className="p-2">
-                                                {patient.phone || "-"}
-                                            </td>
+                                            <td className="p-2">{patient.phone || "-"}</td>
                                             <td className="p-2">
                                                 {patient.deleted_at ? (
-                                                    <span className="text-destructive">
-                                                        Nonaktif
-                                                    </span>
+                                                    <span className="text-destructive">Nonaktif</span>
                                                 ) : (
-                                                    <span className="text-green-600">
-                                                        Aktif
-                                                    </span>
+                                                    <span className="text-green-600">Aktif</span>
                                                 )}
                                             </td>
                                             <td className="p-2 text-right space-x-1">
@@ -418,22 +345,14 @@ export default function Index({ patients, filters }: Props) {
                                                         <Button
                                                             size="icon"
                                                             variant="ghost"
-                                                            onClick={() =>
-                                                                startEdit(
-                                                                    patient
-                                                                )
-                                                            }
+                                                            onClick={() => startEdit(patient)}
                                                         >
                                                             <Pencil className="size-4" />
                                                         </Button>
                                                         <Button
                                                             size="icon"
                                                             variant="ghost"
-                                                            onClick={() =>
-                                                                destroy(
-                                                                    patient.id
-                                                                )
-                                                            }
+                                                            onClick={() => destroy(patient.id)}
                                                         >
                                                             <Trash2 className="size-4 text-destructive" />
                                                         </Button>
@@ -443,9 +362,7 @@ export default function Index({ patients, filters }: Props) {
                                                     <Button
                                                         size="icon"
                                                         variant="ghost"
-                                                        onClick={() =>
-                                                            restore(patient.id)
-                                                        }
+                                                        onClick={() => restore(patient.id)}
                                                     >
                                                         <RotateCcw className="size-4 text-green-600" />
                                                     </Button>
@@ -462,3 +379,10 @@ export default function Index({ patients, filters }: Props) {
         </>
     );
 }
+
+Index.layout = {
+    breadcrumbs: [
+        { title: "Dashboard", href: dashboard() },
+        { title: "Pasien", href: "/dashboard/patients" },
+    ],
+};

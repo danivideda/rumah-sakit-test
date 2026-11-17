@@ -55,20 +55,19 @@ export default function PeriksaPasien({ registrations, filters }: Props) {
     const { auth } = usePage().props as { auth: { user: AuthUser } };
     const [selected, setSelected] = useState<Registration | null>(null);
 
-    const { data, setData, post, processing, errors, reset, clearErrors } =
-        useForm({
-            registration_id: "",
-            keluhan: "",
-            systolic_bp: "",
-            diastolic_bp: "",
-            pulse: "",
-            temperature: "",
-            respiratory_rate: "",
-            weight: "",
-            height: "",
-            examined_at: new Date().toISOString().slice(0, 16),
-            examiner_name: auth?.user?.name || "",
-        });
+    const { data, setData, post, processing, errors, reset, clearErrors } = useForm({
+        registration_id: "",
+        keluhan: "",
+        systolic_bp: "",
+        diastolic_bp: "",
+        pulse: "",
+        temperature: "",
+        respiratory_rate: "",
+        weight: "",
+        height: "",
+        examined_at: new Date().toISOString().slice(0, 16),
+        examiner_name: auth?.user?.name || "",
+    });
 
     const selectRegistration = (reg: Registration) => {
         setSelected(reg);
@@ -105,11 +104,7 @@ export default function PeriksaPasien({ registrations, filters }: Props) {
     };
 
     const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-        router.get(
-            "/dashboard/periksa-pasien",
-            { search: e.target.value },
-            { preserveState: true, replace: true }
-        );
+        router.get("/dashboard/periksa-pasien", { search: e.target.value }, { preserveState: true, replace: true });
     };
 
     return (
@@ -117,9 +112,7 @@ export default function PeriksaPasien({ registrations, filters }: Props) {
             <Head title="Periksa Pasien" />
 
             <div className="space-y-6 p-4 md:p-6">
-                <h1 className="text-2xl font-semibold">
-                    Pencatatan Tanda-Tanda Vital
-                </h1>
+                <h1 className="text-2xl font-semibold">Pencatatan Tanda-Tanda Vital</h1>
 
                 {/* Search */}
                 <div className="relative max-w-md">
@@ -137,206 +130,135 @@ export default function PeriksaPasien({ registrations, filters }: Props) {
                     <Card>
                         <CardHeader>
                             <CardTitle>
-                                Pemeriksaan:{" "}
-                                {selected.patient.medical_record_number} -{" "}
-                                {selected.patient.name}
+                                Pemeriksaan: {selected.patient.medical_record_number} - {selected.patient.name}
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <form
-                                onSubmit={submit}
-                                className="grid gap-4 md:grid-cols-2"
-                            >
+                            <form onSubmit={submit} className="grid gap-4 md:grid-cols-2">
                                 <div className="space-y-2 md:col-span-2">
                                     <Label htmlFor="keluhan">Keluhan</Label>
                                     <Input
                                         id="keluhan"
                                         value={data.keluhan}
-                                        onChange={(e) =>
-                                            setData("keluhan", e.target.value)
-                                        }
+                                        onChange={(e) => setData("keluhan", e.target.value)}
                                         placeholder="Keluhan pasien..."
                                     />
                                     <InputError message={errors.keluhan} />
                                 </div>
 
                                 <div className="space-y-2">
-                                    <Label htmlFor="systolic_bp">
-                                        Tekanan Darah Sistolik (mmHg)
-                                    </Label>
+                                    <Label htmlFor="systolic_bp">Tekanan Darah Sistolik (mmHg)</Label>
                                     <Input
                                         id="systolic_bp"
                                         type="number"
                                         value={data.systolic_bp}
-                                        onChange={(e) =>
-                                            setData(
-                                                "systolic_bp",
-                                                e.target.value
-                                            )
-                                        }
+                                        onChange={(e) => setData("systolic_bp", e.target.value)}
                                         placeholder="120"
                                     />
                                     <InputError message={errors.systolic_bp} />
                                 </div>
 
                                 <div className="space-y-2">
-                                    <Label htmlFor="diastolic_bp">
-                                        Tekanan Darah Diastolik (mmHg)
-                                    </Label>
+                                    <Label htmlFor="diastolic_bp">Tekanan Darah Diastolik (mmHg)</Label>
                                     <Input
                                         id="diastolic_bp"
                                         type="number"
                                         value={data.diastolic_bp}
-                                        onChange={(e) =>
-                                            setData(
-                                                "diastolic_bp",
-                                                e.target.value
-                                            )
-                                        }
+                                        onChange={(e) => setData("diastolic_bp", e.target.value)}
                                         placeholder="80"
                                     />
                                     <InputError message={errors.diastolic_bp} />
                                 </div>
 
                                 <div className="space-y-2">
-                                    <Label htmlFor="pulse">
-                                        Denyut Nadi (bpm)
-                                    </Label>
+                                    <Label htmlFor="pulse">Denyut Nadi (bpm)</Label>
                                     <Input
                                         id="pulse"
                                         type="number"
                                         value={data.pulse}
-                                        onChange={(e) =>
-                                            setData("pulse", e.target.value)
-                                        }
+                                        onChange={(e) => setData("pulse", e.target.value)}
                                         placeholder="72"
                                     />
                                     <InputError message={errors.pulse} />
                                 </div>
 
                                 <div className="space-y-2">
-                                    <Label htmlFor="temperature">
-                                        Suhu Tubuh (°C)
-                                    </Label>
+                                    <Label htmlFor="temperature">Suhu Tubuh (°C)</Label>
                                     <Input
                                         id="temperature"
                                         type="number"
                                         step="0.1"
                                         value={data.temperature}
-                                        onChange={(e) =>
-                                            setData(
-                                                "temperature",
-                                                e.target.value
-                                            )
-                                        }
+                                        onChange={(e) => setData("temperature", e.target.value)}
                                         placeholder="36.5"
                                     />
                                     <InputError message={errors.temperature} />
                                 </div>
 
                                 <div className="space-y-2">
-                                    <Label htmlFor="respiratory_rate">
-                                        Frekuensi Pernapasan (x/menit)
-                                    </Label>
+                                    <Label htmlFor="respiratory_rate">Frekuensi Pernapasan (x/menit)</Label>
                                     <Input
                                         id="respiratory_rate"
                                         type="number"
                                         value={data.respiratory_rate}
-                                        onChange={(e) =>
-                                            setData(
-                                                "respiratory_rate",
-                                                e.target.value
-                                            )
-                                        }
+                                        onChange={(e) => setData("respiratory_rate", e.target.value)}
                                         placeholder="18"
                                     />
-                                    <InputError
-                                        message={errors.respiratory_rate}
-                                    />
+                                    <InputError message={errors.respiratory_rate} />
                                 </div>
 
                                 <div className="space-y-2">
-                                    <Label htmlFor="weight">
-                                        Berat Badan (kg)
-                                    </Label>
+                                    <Label htmlFor="weight">Berat Badan (kg)</Label>
                                     <Input
                                         id="weight"
                                         type="number"
                                         step="0.1"
                                         value={data.weight}
-                                        onChange={(e) =>
-                                            setData("weight", e.target.value)
-                                        }
+                                        onChange={(e) => setData("weight", e.target.value)}
                                         placeholder="65.5"
                                     />
                                     <InputError message={errors.weight} />
                                 </div>
 
                                 <div className="space-y-2">
-                                    <Label htmlFor="height">
-                                        Tinggi Badan (cm)
-                                    </Label>
+                                    <Label htmlFor="height">Tinggi Badan (cm)</Label>
                                     <Input
                                         id="height"
                                         type="number"
                                         step="0.1"
                                         value={data.height}
-                                        onChange={(e) =>
-                                            setData("height", e.target.value)
-                                        }
+                                        onChange={(e) => setData("height", e.target.value)}
                                         placeholder="170"
                                     />
                                     <InputError message={errors.height} />
                                 </div>
 
                                 <div className="space-y-2">
-                                    <Label htmlFor="examined_at">
-                                        Waktu Pemeriksaan
-                                    </Label>
+                                    <Label htmlFor="examined_at">Waktu Pemeriksaan</Label>
                                     <Input
                                         id="examined_at"
                                         type="datetime-local"
                                         value={data.examined_at}
-                                        onChange={(e) =>
-                                            setData(
-                                                "examined_at",
-                                                e.target.value
-                                            )
-                                        }
+                                        onChange={(e) => setData("examined_at", e.target.value)}
                                     />
                                     <InputError message={errors.examined_at} />
                                 </div>
 
                                 <div className="space-y-2">
-                                    <Label htmlFor="examiner_name">
-                                        Nama Petugas Pemeriksa
-                                    </Label>
+                                    <Label htmlFor="examiner_name">Nama Petugas Pemeriksa</Label>
                                     <Input
                                         id="examiner_name"
                                         value={data.examiner_name}
-                                        onChange={(e) =>
-                                            setData(
-                                                "examiner_name",
-                                                e.target.value
-                                            )
-                                        }
+                                        onChange={(e) => setData("examiner_name", e.target.value)}
                                     />
-                                    <InputError
-                                        message={errors.examiner_name}
-                                    />
+                                    <InputError message={errors.examiner_name} />
                                 </div>
 
                                 <div className="md:col-span-2 flex gap-2 pt-2">
                                     <Button type="submit" disabled={processing}>
-                                        {processing
-                                            ? "Menyimpan..."
-                                            : "Simpan Tanda Vital"}
+                                        {processing ? "Menyimpan..." : "Simpan Tanda Vital"}
                                     </Button>
-                                    <Button
-                                        type="button"
-                                        variant="outline"
-                                        onClick={cancel}
-                                    >
+                                    <Button type="button" variant="outline" onClick={cancel}>
                                         Batal
                                     </Button>
                                 </div>
@@ -348,9 +270,7 @@ export default function PeriksaPasien({ registrations, filters }: Props) {
                 {/* Daftar Antrian Pemeriksaan */}
                 <Card>
                     <CardHeader>
-                        <CardTitle>
-                            Daftar Pasien Menunggu Pemeriksaan
-                        </CardTitle>
+                        <CardTitle>Daftar Pasien Menunggu Pemeriksaan</CardTitle>
                     </CardHeader>
                     <CardContent className="overflow-x-auto">
                         <table className="w-full text-sm">
@@ -368,50 +288,27 @@ export default function PeriksaPasien({ registrations, filters }: Props) {
                             <tbody>
                                 {registrations.data.length === 0 ? (
                                     <tr>
-                                        <td
-                                            colSpan={7}
-                                            className="p-4 text-center text-muted-foreground"
-                                        >
-                                            Tidak ada pasien yang menunggu
-                                            pemeriksaan
+                                        <td colSpan={7} className="p-4 text-center text-muted-foreground">
+                                            Tidak ada pasien yang menunggu pemeriksaan
                                         </td>
                                     </tr>
                                 ) : (
                                     registrations.data.map((reg) => (
-                                        <tr
-                                            key={reg.id}
-                                            className="border-b hover:bg-muted/50"
-                                        >
-                                            <td className="p-2 font-mono">
-                                                {reg.registration_number}
+                                        <tr key={reg.id} className="border-b hover:bg-muted/50">
+                                            <td className="p-2 font-mono">{reg.registration_number}</td>
+                                            <td className="p-2">
+                                                {new Date(reg.registration_date).toLocaleDateString("id-ID")}
                                             </td>
                                             <td className="p-2">
-                                                {new Date(
-                                                    reg.registration_date
-                                                ).toLocaleDateString("id-ID")}
+                                                {reg.patient.medical_record_number} - {reg.patient.name}
                                             </td>
-                                            <td className="p-2">
-                                                {
-                                                    reg.patient
-                                                        .medical_record_number
-                                                }{" "}
-                                                - {reg.patient.name}
-                                            </td>
-                                            <td className="p-2">
-                                                {reg.polyclinic.name}
-                                            </td>
-                                            <td className="p-2">
-                                                {reg.doctor.name}
-                                            </td>
-                                            <td className="p-2 max-w-xs truncate">
-                                                {reg.complaint || "-"}
-                                            </td>
+                                            <td className="p-2">{reg.polyclinic.name}</td>
+                                            <td className="p-2">{reg.doctor.name}</td>
+                                            <td className="p-2 max-w-xs truncate">{reg.complaint || "-"}</td>
                                             <td className="p-2 text-right">
                                                 <Button
                                                     size="sm"
-                                                    onClick={() =>
-                                                        selectRegistration(reg)
-                                                    }
+                                                    onClick={() => selectRegistration(reg)}
                                                     disabled={!!selected}
                                                 >
                                                     Periksa
